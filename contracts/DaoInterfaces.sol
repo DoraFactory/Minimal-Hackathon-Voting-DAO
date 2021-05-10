@@ -10,6 +10,9 @@ contract DaoStorage {
     // Address of registered project
     mapping(address => bool) public isProjectOwners;
 
+    // whiteList
+    address[] public whiteList;
+
     // Judges' voting information
     mapping(address => uint256[]) public votedInfo;
 
@@ -25,6 +28,7 @@ contract DaoStorage {
     address[] public tokens;
 
     struct Project {
+        uint256 id;
         address owner;
         string name;
     }
