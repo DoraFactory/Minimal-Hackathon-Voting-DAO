@@ -63,8 +63,8 @@ contract Dao is DaoInterfaces, Ownable {
     function deleteProject(uint256 projectId) public onlyOwner() {
         require(isEnd == false, "It's already over.");
         Project memory p = projects[projectId];
-        require(p.owner != address(0), "non exist projectId");
-        delete isProjectOwners[msg.sender];
+        require(p.id == projectId, "non exist projectId");
+        delete isProjectOwners[p.owner];
         delete projects[projectId];
         uint index = allProjectIds.length;
         for (uint i = 0; i < allProjectIds.length; i++) {
@@ -93,7 +93,7 @@ contract Dao is DaoInterfaces, Ownable {
         require(isInWhiteList(msg.sender), "Unauthorized address");
         require(isProjectOwners[msg.sender] == false, "has registered");
         Project memory p = projects[projectId];
-        require(p.owner == address(0), "Existing projectId");
+        require(p.id != projectId, "Existing projectId");
         projects[projectId] = Project({
         id : projectId,
         owner : msg.sender,
@@ -113,6 +113,7 @@ contract Dao is DaoInterfaces, Ownable {
     function vote(uint256[] memory projectIds) public {
         require(isEnd == false, "The voting is over");
         require(projectIds.length == judgeVotesLimit, "Each judge has three votes");
+
         uint256[] memory infos = votedInfo[msg.sender];
         require(infos.length == 0, "The judges have run out of votes");
 
@@ -120,7 +121,7 @@ contract Dao is DaoInterfaces, Ownable {
         bool isOwner = isProjectOwners[msg.sender];
         for (uint i = 0; i < projectIds.length; i++) {
             Project memory p = projects[projectIds[i]];
-            require(p.owner != address(0), "Nonexistent project id");
+            require(p.id == projectIds[i], "Nonexistent project id");
             require(isJudge || (isOwner && p.owner != msg.sender), "");
             projectPoll[projectIds[i]] += 1;
         }
@@ -157,7 +158,7 @@ contract Dao is DaoInterfaces, Ownable {
         }
     }
 
-    function getBonus(uint256 id) public view returns(uint[] memory) {
+    function getBonus(uint256 id) public view returns (uint[] memory) {
         return bonus[id];
     }
 

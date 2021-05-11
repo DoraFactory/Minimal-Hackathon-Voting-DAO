@@ -80,6 +80,9 @@ contract('deploy contract', (accounts) => {
             res = await this.dao.getVotedInfo(accounts[2]);
             assert.equal(res.toString(), [2, 2, 2]);
 
+            res = await this.dao.projectPoll(2);
+            assert.equal(res.toString(), 3);
+
             await this.token1.transfer(this.dao.address, 1000);
             await this.token2.transfer(this.dao.address, 1000);
 
