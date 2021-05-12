@@ -63,7 +63,7 @@ contract Dao is DaoInterfaces, Ownable {
     function deleteProject(uint256 projectId) public onlyOwner() {
         require(isEnd == false, "It's already over.");
         Project memory p = projects[projectId];
-        require(p.id == projectId, "non exist projectId");
+        require(p.projectID == projectId, "non exist projectId");
         delete isProjectOwners[p.owner];
         delete projects[projectId];
         uint index = allProjectIds.length;
@@ -88,14 +88,15 @@ contract Dao is DaoInterfaces, Ownable {
     * @param name project name
     * @param projectId project Id
     */
-    function regProject(string memory name, uint256 projectId) public {
+    function regProject(string memory name, uint256 projectId, uint256 hackerLinkID) public {
         require(isEnd == false, "It's already over.");
         require(isInWhiteList(msg.sender), "Unauthorized address");
         require(isProjectOwners[msg.sender] == false, "has registered");
         Project memory p = projects[projectId];
-        require(p.id != projectId, "Existing projectId");
+        require(p.projectID != projectId, "Existing projectId");
         projects[projectId] = Project({
-        id : projectId,
+        projectID : projectId,
+        hackerLinkID : hackerLinkID,
         owner : msg.sender,
         name : name});
         isProjectOwners[msg.sender] = true;
@@ -121,7 +122,7 @@ contract Dao is DaoInterfaces, Ownable {
         bool isOwner = isProjectOwners[msg.sender];
         for (uint i = 0; i < projectIds.length; i++) {
             Project memory p = projects[projectIds[i]];
-            require(p.id == projectIds[i], "Nonexistent project id");
+            require(p.projectID == projectIds[i], "Nonexistent project id");
             require(isJudge || (isOwner && p.owner != msg.sender), "");
             projectPoll[projectIds[i]] += 1;
         }
