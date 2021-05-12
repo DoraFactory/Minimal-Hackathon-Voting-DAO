@@ -28,7 +28,8 @@ contract DaoStorage {
     address[] public tokens;
 
     struct Project {
-        uint256 id;
+        uint256 projectID;
+        uint256 hackerLinkID;
         address owner;
         string name;
     }
